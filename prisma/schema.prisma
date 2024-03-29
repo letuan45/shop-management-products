@@ -12,3 +12,22 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  image       String
+  status      Int
+  importPrice Int
+  exportPrice Int
+  stock       Int
+  discount    Float
+  category    Category @relation(fields: [idCategory], references: [id])
+  idCategory  Int
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+}
