@@ -17,17 +17,19 @@ model Product {
   id          Int      @id @default(autoincrement())
   name        String
   image       String
-  status      Int
+  status      Int      @default(0)
   importPrice Int
   exportPrice Int
-  stock       Int
+  stock       Int      @default(0)
   discount    Float
-  category    Category @relation(fields: [idCategory], references: [id])
-  idCategory  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Category {
   id       Int       @id @default(autoincrement())
-  name     String
+  name     String    @unique
   products Product[]
 }
