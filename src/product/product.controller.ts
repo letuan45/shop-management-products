@@ -11,7 +11,7 @@ export class ProductController {
 
   @MessagePattern({ cmd: 'get_product' })
   async get(data: { page: number; search?: string }) {
-    return this.productService.get(data.page, data.search);
+    return await this.productService.get(data.page, data.search);
   }
 
   @MessagePattern({ cmd: 'get_product_by_id' })
