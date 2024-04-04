@@ -39,4 +39,8 @@ export class ProductRepository {
       },
     });
   }
+
+  async updateStock(id: number, stock: number) {
+    return await this.prisma.product.update({ where: { id }, data: { stock } });
+  }
 }

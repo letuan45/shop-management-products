@@ -37,4 +37,9 @@ export class ProductController {
     );
     return await this.productService.update(data.id, updateProductServiceDto);
   }
+
+  @MessagePattern({ cmd: 'increase_stock' })
+  async increaseStock(data: { id: number; quantity: number }) {
+    return await this.productService.increaseStock(data.id, data.quantity);
+  }
 }

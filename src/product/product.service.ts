@@ -53,4 +53,12 @@ export class ProductService {
   async update(id: number, updateProductDto: UpdateProductServiceDto) {
     return this.productRepository.update(id, updateProductDto);
   }
+
+  async increaseStock(id: number, quantity: number) {
+    const product = await this.getById(id);
+    return await this.productRepository.updateStock(
+      product.id,
+      product.stock + quantity,
+    );
+  }
 }
