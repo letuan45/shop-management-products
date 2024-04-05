@@ -43,4 +43,11 @@ export class ProductRepository {
   async updateStock(id: number, stock: number) {
     return await this.prisma.product.update({ where: { id }, data: { stock } });
   }
+
+  async setStatus(id: number, status: number) {
+    return await this.prisma.product.update({
+      where: { id },
+      data: { status },
+    });
+  }
 }

@@ -42,4 +42,11 @@ export class ProductController {
   async increaseStock(data: { id: number; quantity: number }) {
     return await this.productService.increaseStock(data.id, data.quantity);
   }
+
+  @MessagePattern({ cmd: 'minus_products_stock' })
+  async minnusProductsStock(data: {
+    items: { productId: number; quantity: number }[];
+  }) {
+    return await this.productService.minusStock(data.items);
+  }
 }

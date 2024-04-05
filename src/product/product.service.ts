@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ProductRepository } from './product.repository';
 import { CreateProductDto } from './dtos/createProduct.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -56,9 +60,43 @@ export class ProductService {
 
   async increaseStock(id: number, quantity: number) {
     const product = await this.getById(id);
+    if (product.status === 2) {
+      throw new RpcException(`Sản phẩm ${product.name} đã khóa!`);
+    }
+    await this.productRepository.setStatus(product.id, 1);
+
     return await this.productRepository.updateStock(
       product.id,
       product.stock + quantity,
+    );
+  }
+
+  async minusStock(productItems: { productId: number; quantity: number }[]) {
+    await Promise.all(
+      productItems.map(async (item) => {
+        const product = await this.getById(item.productId);
+        if (product.stock < item.quantity) {
+          throw new RpcException(
+            new ConflictException(
+              `Sản phẩm ${product.name} không đủ tồn kho để bán!`,
+            ),
+          );
+        }
+      }),
+    );
+
+    return await Promise.all(
+      productItems.map(async (item) => {
+        const productExist = await this.getById(item.productId);
+        const product = await this.productRepository.updateStock(
+          productExist.id,
+          productExist.stock - item.quantity,
+        );
+        if (product.stock === 0) {
+          return await this.productRepository.setStatus(product.id, 0);
+        }
+        return product;
+      }),
     );
   }
 }
