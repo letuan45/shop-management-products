@@ -9,7 +9,10 @@ export class ProductRepository {
   constructor(private prisma: PrismaService) {}
 
   async getById(id: number) {
-    return await this.prisma.product.findUnique({ where: { id } });
+    return await this.prisma.product.findUnique({
+      where: { id },
+      include: { category: true },
+    });
   }
 
   async create(data: CreateProductDto) {

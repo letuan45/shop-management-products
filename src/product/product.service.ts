@@ -31,6 +31,7 @@ export class ProductService {
       take: this.pageLimit,
       skip: skip,
       where: where,
+      include: { category: true },
       orderBy: { id: 'desc' },
     });
 
