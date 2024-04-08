@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shop_management_product_api
+    environment:
+      - DATABASE_URL=postgresql://postgres:123456@database:5432/shop_management_product?schema=public
+      - AMQP_PRODUCT_URL=amqps://iiyscote:OqxkEgQlzP46BNcT1uhrUAVCdg9gtFHT@armadillo.rmq.cloudamqp.com/iiyscote
+    depends_on:
+      - database
+
+  database:
+    image: postgres
+    container_name: shop_management_product
+    ports:
+      - '5434:5434'
+    volumes:
+      - './postgres-data:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=shop_management_product
