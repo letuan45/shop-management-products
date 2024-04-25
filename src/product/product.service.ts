@@ -16,10 +16,16 @@ export class ProductService {
     private prisma: PrismaService,
   ) {}
 
-  pageLimit = 10;
+  pageLimit = 5;
 
-  async get(page: number, search?: string) {
-    const skip = this.pageLimit * (page - 1);
+  async get(
+    page: number,
+    search?: string,
+    pageSize?: number,
+    isForSell?: boolean,
+  ) {
+    const actualPageSize = pageSize ?? this.pageLimit;
+    const skip = actualPageSize * (page - 1);
     let where = {};
     if (search) {
       where = {
@@ -27,8 +33,12 @@ export class ProductService {
       };
     }
 
+    if (isForSell) {
+      where = { ...where, stock: { gt: 0 }, status: 1 };
+    }
+
     const data = await this.prisma.product.findMany({
-      take: this.pageLimit,
+      take: +actualPageSize,
       skip: skip,
       where: where,
       include: { category: true },

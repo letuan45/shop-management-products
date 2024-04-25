@@ -10,8 +10,19 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @MessagePattern({ cmd: 'get_product' })
-  async get(data: { page: number; search?: string }) {
-    return await this.productService.get(data.page, data.search);
+  async get(data: {
+    page: number;
+    search?: string;
+    pageSize?: number;
+    isForSell?: string;
+  }) {
+    const isForSell: boolean = data.isForSell === 'true' ? true : false;
+    return await this.productService.get(
+      data.page,
+      data.search,
+      data.pageSize,
+      isForSell,
+    );
   }
 
   @MessagePattern({ cmd: 'get_product_by_id' })
